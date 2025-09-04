@@ -1,0 +1,39 @@
+name: powerbi-template-duplicate
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_file:
+        description: "Path to source .pbit template"
+        required: true
+        default: "powerbi/report_template.pbit"
+      new_names:
+        description: "Comma-separated list of new report names"
+        required: true
+        default: "SalesReport,FinanceReport"
+      output_dir:
+        description: "Output directory for new .pbit files"
+        required: false
+        default: "generated"
+
+jobs:
+  duplicate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run duplication script
+        run: |
+          mkdir -p ${{ github.workspace }}/${{ github.event.inputs.output_dir }}
+          python powerbi/duplicate_pbit.py             "${{ github.event.inputs.source_file }}"             $(echo "${{ github.event.inputs.new_names }}" | tr ',' ' ')             -o "${{ github.workspace }}/${{ github.event.inputs.output_dir }}"
+
+      - name: Upload generated .pbit files
+        uses: actions/upload-artifact@v4
+        with:
+          name: pbit-files
+          path: ${{ github.workspace }}/${{ github.event.inputs.output_dir }}/*.pbit
