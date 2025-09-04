@@ -1,12 +1,18 @@
-# Power BI Template Renamer
+# Power BI Template Utility
 
-Utility to duplicate a `.pbit` (Power BI template) file into new template files with different names.
+Duplicate a `.pbit` (Power BI template) file into new template files with different names.
 
 ## Usage
 
 ```bash
-# Make script executable
-chmod +x scripts/duplicate_pbit.py
-
 # Example: duplicate report_template.pbit into SalesReport.pbit and FinanceReport.pbit
-python scripts/duplicate_pbit.py ./report_template.pbit SalesReport FinanceReport -o ./output
+python powerbi/duplicate_pbit.py ./report_template.pbit SalesReport FinanceReport -o ./output
+```
+
+This will create:
+
+```
+output/
+  SalesReport.pbit
+  FinanceReport.pbit
+```
