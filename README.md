@@ -1,18 +1,25 @@
-# Power BI Template Utility
+# Power BI Template Duplicator (AWS Lambda)
 
-Duplicate a `.pbit` (Power BI template) file into new template files with different names.
+This Lambda function duplicates a `.pbit` file stored in Amazon S3 into multiple new templates with different names.
 
-## Usage
+## 🚀 Deployment
 
-```bash
-# Example: duplicate report_template.pbit into SalesReport.pbit and FinanceReport.pbit
-python powerbi/duplicate_pbit.py ./report_template.pbit SalesReport FinanceReport -o ./output
-```
+1. Create an S3 bucket and upload your base template (e.g., `templates/base_template.pbit`).
+2. Deploy the Lambda function with:
+   - Runtime: Python 3.9+
+   - Handler: `lambda_function.lambda_handler`
+   - IAM Role: Requires `s3:GetObject` and `s3:PutObject` permissions.
+3. Configure environment variables:
+   - `SOURCE_BUCKET` = name of the bucket containing the base template
+   - `SOURCE_KEY` = path to the base `.pbit` (e.g., `templates/base_template.pbit`)
+   - `TARGET_BUCKET` (optional) = bucket where duplicates will be stored
+4. Update `new_template_names` in `lambda_function.py` with your desired template filenames.
+5. (Optional) Add an EventBridge rule to trigger on `s3:ObjectCreated:*` for automation.
 
-This will create:
+## 🛠 Example
 
-```
-output/
-  SalesReport.pbit
-  FinanceReport.pbit
-```
+- Input: `s3://my-bi-templates/templates/base_template.pbit`
+- Output:
+  - `s3://my-bi-templates/templates/template_sales.pbit`
+  - `s3://my-bi-templates/templates/template_marketing.pbit`
+  - `s3://my-bi-templates/templates/template_finance.pbit`
